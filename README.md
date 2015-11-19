@@ -42,11 +42,17 @@ Of course, if some handlers are terminal, that means others must be non-terminal
 ```javascript
 // routes/contacts.js
 
-app.get('/', function(req, res, next) {
+var express = require('express');
+var router = express.Router();
+
+router.get('/', function(req, res, next) {
   if (!res.locals.contacts) {
     res.locals.contacts = [];
   }
+  next();
+});
 
+router.get('/', function(req, res, next) {
   // add first group of contacts (from iPhone/iCloud?)
   res.locals.contacts.push({
     name: 'David',
@@ -55,11 +61,7 @@ app.get('/', function(req, res, next) {
   next();
 });
 
-app.get('/', function(req, res, next) {
-  if (!res.locals.contacts) {
-    res.locals.contacts = [];
-  }
-
+router.get('/', function(req, res, next) {
   // add second group of contacts (from Google/Android?)
   res.locals.contacts.push({
     name: 'Brian',
@@ -68,11 +70,7 @@ app.get('/', function(req, res, next) {
   next();
 });
 
-app.get('/', function(req, res, next) {
-  if (!res.locals.contacts) {
-    res.locals.contacts = [];
-  }
-
+router.get('/', function(req, res, next) {
   // add third group of contacts (from Hotmail?)
   res.locals.contacts.push({
     name: 'Alex',
@@ -81,10 +79,12 @@ app.get('/', function(req, res, next) {
   next();
 });
 
-app.get('/', function(req, res) {
+router.get('/', function(req, res) {
   res.json(res.locals.contacts);
   res.status(200);
 });
+
+module.exports = router;
 ```
 
 Look at the page in your browser and notice that the handlers were invoked in the order we defined them.
